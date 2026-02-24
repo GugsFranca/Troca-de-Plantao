@@ -36,3 +36,11 @@ src/main/resources/application.properties.teste
 src/main/java/com/trocaplantao/auth/config/SecurityConfig.java
 
 *.env
+/docker-compose.yml
+/TrocaPlantaoFront/.dockerignore
+/TrocaPlantaoBack/uploads/
+TrocaPlantaoBack/Dockerfile
+TrocaPlantaoFront/Dockerfile
+.gitignore
+TrocaPlantaoBack/src/main/resources/application-prod.properties
+TrocaPlantaoBack/src/main/resources/application-dev.properties
