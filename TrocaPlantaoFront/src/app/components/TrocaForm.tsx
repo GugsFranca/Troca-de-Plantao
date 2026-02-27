@@ -1023,7 +1023,7 @@ export default function TrocaForm() {
                                     </VStack>
 
                                     {/* Botão de Envio */}
-                                    <Box pt={10}>
+                                    <Box>
                                         <Button
                                             type="submit"
                                             size="xl"
@@ -1052,7 +1052,9 @@ export default function TrocaForm() {
 
 
                                 </VStack>
-
+                                <Text textAlign={'center'} color={'gray.500'} fontSize={'sm'} pt={10}>
+                                    Ao clicar em "Enviar Solicitação", o id da troca será gerado e enviado para o e-mail do requerente primário e secundário, onde ambos poderão acompanhar o status da solicitação.
+                                </Text>
                             </form>
 
                         </Card.Body>
