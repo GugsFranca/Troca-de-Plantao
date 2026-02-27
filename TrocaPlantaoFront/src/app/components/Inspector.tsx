@@ -88,7 +88,7 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
         document.title = `Painel do Administrador - ${nomeBase}`;
     }, [nomeBase]);
 
-    const BackEndURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+    // const BackEndURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     useEffect(() => {
         fetchAllTrocas();
@@ -235,7 +235,19 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
 
     const trocasFiltradas = allTrocas
         .filter(t => {
-            const matchesUnidade = t.unidade === nomeBase;
+            let matchesUnidade = false;
+
+            const unidadeTroca = t.unidade ?? "";
+            const base = nomeBase.split("_").slice(0, 3).join("_");
+
+            if (nomeBase.endsWith("_APONT")) {
+                matchesUnidade = unidadeTroca.startsWith(base);
+            } else {
+                matchesUnidade = unidadeTroca === nomeBase;
+            }
+
+            if (!matchesUnidade) return false;
+
             if (!matchesUnidade) return false;
 
             // Filtro de Função
@@ -480,7 +492,7 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
                                                         </VStack>
                                                         {troca.nomeInspetor && (
                                                             <VStack align="start" gap={0}>
-                                                                <Text fontSize="xs" fontWeight="black" color="blue.800" textTransform="uppercase">Analisata</Text>
+                                                                <Text fontSize="xs" fontWeight="black" color="blue.800" textTransform="uppercase">Analista</Text>
                                                                 <Heading size="md" fontWeight="black">  {troca.nomeInspetor} </Heading>
                                                             </VStack>
                                                         )}
@@ -506,7 +518,7 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
                                                     <VStack align="stretch" gap={8}>
                                                         <Flex justify="space-between" align="center" flexWrap="wrap" gap={4}>
                                                             <Heading size="md" color="gray.800" fontWeight="bold" display="flex" alignItems="center" gap={2}>
-                                                                <ArrowRightLeft size={20} color="blue.800" /> Detalhes da Substituição
+                                                                <ArrowRightLeft size={20} color="blue.800" /> Detalhes da Substituição | {troca.id}
                                                             </Heading>
 
                                                             <HStack gap={3}>
@@ -571,7 +583,7 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
                                                                                     {r.imagens?.map(img => (
                                                                                         <img
                                                                                             key={img.id}
-                                                                                            src={BackEndURL?.replace("/api", "") + "/uploads/" + img.nomeArquivo}
+                                                                                            src={`/api/uploads/${img.nomeArquivo}`}
                                                                                             alt={img.nomeArquivo}
                                                                                             width={1200}
                                                                                             style={{ borderRadius: 8 }}
