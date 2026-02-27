@@ -44,3 +44,4 @@ TrocaPlantaoFront/Dockerfile
 .gitignore
 TrocaPlantaoBack/src/main/resources/application-prod.properties
 TrocaPlantaoBack/src/main/resources/application-dev.properties
+/uploads/

@@ -23,9 +23,9 @@ public class ConfigurationSpring implements WebMvcConfigurer {
         return factory.createMultipartConfig();
     }
 
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-                .addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + Paths.get(uploadDir).toAbsolutePath() + "/");
-    }
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry
+//                .addResourceHandler("/uploads/**")
+//                .addResourceLocations("file:" + Paths.get(uploadDir).toAbsolutePath() + "/");
+//    }
 }
