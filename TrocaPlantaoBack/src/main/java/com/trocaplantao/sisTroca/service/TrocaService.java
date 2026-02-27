@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -88,9 +89,14 @@ public class TrocaService {
         return RequerenteMapper.toPessoaDTO(requerente);
     }
 
+    @Transactional
     public void deleteById(String id) {
-        trocaRepository.deleteById(id);
+        trocaRepository.findById(id).ifPresent(troca -> {
+            deletarArquivosDaTroca(troca);
+            trocaRepository.delete(troca);
+        });
     }
+
 
     public void finalizeTroca(String id, String aceitoSN, String nomeInspector, String motivoTroca) {
         var troca = trocaRepository.findById(id)
@@ -112,18 +118,34 @@ public class TrocaService {
 
     @Scheduled(cron = "0 0 3 * * ?")
     @Transactional
-    public void removerTrocasAntigas() throws IOException {
+    public void removerTrocasAntigas() {
         var limite = LocalDateTime.now().minusDays(7);
         var trocas = trocaRepository.findTrocasParaLimpeza(limite);
 
         for (Troca troca : trocas) {
-            var imagens = troca.getParticipantes().stream()
-                    .map(TrocaRequerente::getImagens)
-                    .flatMap(List::stream)
-                    .toList();
+            deletarArquivosDaTroca(troca);
+            trocaRepository.delete(troca);
+        }
+        log.info("Limpeza automática concluída: {} trocas removidas.", trocas.size());
+    }
 
-            for (var img : imagens) {
-                Files.deleteIfExists(Paths.get(img.getCaminhoArquivo()));
+    private void deletarArquivosDaTroca(Troca troca) {
+        var imagens = troca.getParticipantes().stream()
+                .map(TrocaRequerente::getImagens)
+                .flatMap(List::stream)
+                .toList();
+
+        for (var img : imagens) {
+            try {
+
+                Path path = Paths.get(img.getCaminhoArquivo());
+                boolean deletado = Files.deleteIfExists(path);
+
+                if (!deletado) {
+                    log.warn("Arquivo não encontrado para deleção: {}", path);
+                }
+            } catch (IOException e) {
+                log.error("Erro ao deletar arquivo {}: {}", img.getCaminhoArquivo(), e.getMessage());
             }
         }
     }

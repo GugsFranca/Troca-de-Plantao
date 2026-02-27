@@ -1,5 +1,6 @@
 package com.trocaplantao.sisTroca.service;
 
+import com.trocaplantao.auth.entity.UserEntity;
 import com.trocaplantao.auth.repository.UserRepository;
 import com.trocaplantao.sisTroca.entity.Requerente;
 import com.trocaplantao.sisTroca.entity.Troca;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -50,9 +52,14 @@ public class EmailService {
     }
 
     public void enviarEmailsTroca(Troca troca) {
+        log.info("Enviando emails de troca: {}", troca.getUnidade());
         String nomeBase = troca.getUnidade();
-        var baseOpt = userRepository.findByNameIgnoreCase(nomeBase);
-
+        Optional<UserEntity> baseOpt;
+        if(nomeBase.contains("UPA_JARDIM_IRIS")){
+            baseOpt =  userRepository.findByNameIgnoreCase("UPA_JARDIM_IRIS");
+        }else {
+            baseOpt = userRepository.findByNameIgnoreCase(nomeBase);
+        }
         baseOpt.ifPresent(base -> enviarEmail(
                 base.getEmail(),
                 "Nova Solicitação de Troca de Plantão - " + troca.getId(),

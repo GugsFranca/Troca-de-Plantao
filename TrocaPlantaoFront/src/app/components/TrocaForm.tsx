@@ -31,12 +31,16 @@ import {
 
 import { toaster } from "@/app/components/ui/toaster";
 import { FormValues, FUNCOES_PLANTAO, UNIDADES_ATUACAO } from '../type';
+
 import { useState } from 'react';
 import Header from './Header';
+import SuccessTrocaDialog from './ui/SuccessTrocaModal';
 
 export default function TrocaForm() {
 
     const [resetKey, setResetKey] = useState(0); // Adicione este estado
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [trocaId, setTrocaId] = useState<string | null>(null);
 
     const { control, handleSubmit, register, reset, formState: { isSubmitting }, setFocus, formState: { errors }, setValue } = useForm<FormValues>({
         shouldFocusError: true,
@@ -103,7 +107,6 @@ export default function TrocaForm() {
                 sec_requerente: sec,
             };
 
-
             const form = new FormData();
             form.append('dados', new Blob([JSON.stringify(dados)], { type: 'application/json' }));
 
@@ -124,13 +127,11 @@ export default function TrocaForm() {
                 throw new Error(text || `Erro ${res.status}` + text);
             }
 
-
             const json = await res.json();
-            toaster.create({
-                title: 'Sucesso',
-                description: `Troca criada com id ${json.id}`,
-                type: 'success'
-            });
+
+            setTrocaId(json.id);
+            setShowSuccess(true);
+
             reset();
             setResetKey(prev => prev + 1);
 
@@ -328,7 +329,7 @@ export default function TrocaForm() {
                                                         >
                                                             <Stack gap={6} w="full">
                                                                 {FUNCOES_PLANTAO.map((grupo) => (
-                                                                    <Box key={grupo.grupo} p={{ base: 4, md: 6 }} border="2px solid" borderColor={errors.funcaoPlantao ? "red.400" : "gray.200"} borderRadius="2xl" bg="gray.50">
+                                                                    <Box key={grupo.grupo} p={{ base: 4, md: 6 }} border="2px solid" borderColor={"gray.200"} borderRadius="2xl" bg="gray.50">
                                                                         <Text fontWeight="black" fontSize="sm" color="blue.800" textTransform="uppercase" mb={4} letterSpacing="widest" textAlign={{ base: "center", md: "left" }}>
                                                                             {grupo.grupo}
                                                                         </Text>
@@ -375,7 +376,7 @@ export default function TrocaForm() {
                                                             colorPalette="blue"
                                                             w="full"
                                                         >
-                                                            <Box p={{ base: 4, md: 6 }} border="2px solid" borderColor={errors.unidade ? "red.400" : "gray.200"} borderRadius="2xl" bg="gray.50">
+                                                            <Box p={{ base: 4, md: 6 }} border="2px solid" borderColor={"gray.200"} borderRadius="2xl" bg="gray.50">
                                                                 <VStack align={{ base: "center", md: "start" }} gap={4}>
                                                                     {UNIDADES_ATUACAO.items.map((item) => (
                                                                         <RadioGroup.Item key={item.value} value={item.value} cursor="pointer" p={2} w="full" _hover={{ bg: "blue.50", borderRadius: "md" }}>
@@ -1061,6 +1062,11 @@ export default function TrocaForm() {
                     <Link href='/track' color={'gray.400'} _hover={{ color: "blue.800" }}>ACOMPANHAR SOLICITAÇÃO</Link>
                     <Link href='/inspector' color={'gray.400'} _hover={{ color: "blue.800" }}>INSPEÇÃO</Link>
                 </Box>
+                <SuccessTrocaDialog
+                    open={showSuccess}
+                    onClose={() => setShowSuccess(false)}
+                    trocaId={trocaId}
+                />
             </Box>
         </>
     );

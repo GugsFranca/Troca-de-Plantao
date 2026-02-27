@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -34,6 +35,16 @@ public class TrocaMapper {
 
     private final RequerenteRepository requerenteRepository;
 
+    private static final Set<String> FUNCOES_ENF = Set.of(
+            "TEC_ENFERMAGEM",
+            "ENFERMEIRO"
+    );
+
+    private static final Set<String> FUNCOES_ADM = Set.of(
+            "SUPERVISOR",
+            "AUX_SERVICOS_GERAIS",
+            "APOIO_ADMINISTRATIVO"
+    );
 
     public TrocaResponse toTrocaResponse(Troca troca) {
         if (troca == null) return null;
@@ -65,14 +76,38 @@ public class TrocaMapper {
 
         Troca troca = Troca.builder()
                 .funcaoPlantao(dto.getTroca().funcaoPlantao())
-                .unidade(dto.getTroca().unidade())
                 .trocaEmAnalise(true)
                 .aceitaSN(AceitaSN.EM_ANALISE)
                 .build();
 
-        // =====================
-        // PRIMARY
-        // =====================
+        var dtoTroca = dto.getTroca();
+
+        String funcao = dtoTroca.funcaoPlantao();
+        String unidadeBase = dtoTroca.unidade();
+
+        if (unidadeBase == null || unidadeBase.isBlank()) {
+            throw new IllegalArgumentException("Unidade não informada");
+        }
+
+// Se for Jardim Íris aplica regra de sufixo
+        if (unidadeBase.startsWith("UPA_JARDIM_IRIS")) {
+
+            if (FUNCOES_ENF.contains(funcao)) {
+                troca.setUnidade(unidadeBase + "_ENF");
+
+            } else if (FUNCOES_ADM.contains(funcao)) {
+                troca.setUnidade(unidadeBase + "_ADM");
+
+            } else {
+                // APONT ou qualquer outra função
+                troca.setUnidade(unidadeBase + "_APONT");
+            }
+
+        } else {
+            // outras unidades futuras
+            troca.setUnidade(unidadeBase);
+        }
+
         Requerente pessoa1 = findOrCreatePessoa(dto.getPri_requerente());
 
         TrocaRequerente tr1 = TrocaRequerente.builder()
