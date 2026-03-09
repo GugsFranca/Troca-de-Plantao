@@ -46,7 +46,6 @@ public class TrocaService {
         ValidaFiles(sec_files, allowedTypes);
 
         var trocaEntity = trocaMapper.toTrocaEntity(trocaRequest, pri_files, sec_files);
-        trocaEntity.setDataCriacao(LocalDateTime.now());
 
         for (var tr : trocaEntity.getParticipantes()) {
             Requerente p = tr.getRequerente();
