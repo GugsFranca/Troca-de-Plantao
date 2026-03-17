@@ -60,6 +60,7 @@ type Troca = {
     trocaEmAnalise?: boolean;
     aceitaSN?: 'ACEITO' | 'RECUSADO' | 'EM_ANALISE';
     finalizadaEm?: string | null;
+    dataCriacao?: string | null;
     nomeInspetor?: string;
 };
 
@@ -105,6 +106,7 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
             const res = await fetch('/api/trocas');
             if (!res.ok) throw new Error(await res.text());
             const json = await res.json();
+            console.log(json);
             setAllTrocas(Array.isArray(json) ? json : []);
         } catch (err: any) {
             toaster.create({ title: 'Erro ao buscar trocas', description: err?.message ?? String(err), type: 'error', duration: 3000 });
@@ -293,13 +295,24 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
         .map(t => t.funcaoPlantao)
     )).sort();
 
-    function formatarDataHora(dataString?: string | null) {
+    function formatarFinal(dataString?: string | null) {
         if (!dataString) return "—";
 
         const data = new Date(dataString);
 
         return data.toLocaleDateString("pt-BR");
+    }
+    function formatarCriacao(dataString?: string | null) {
+        if (!dataString) return "—";
 
+        const formatador = new Intl.DateTimeFormat('pt-BR', {
+            dateStyle: 'short', // Ex: 04/03/2026
+            timeStyle: 'short'  // Ex: 14:30
+        });
+
+        const dataFormatada = formatador.format(new Date(dataString));
+        console.log(dataFormatada);
+        return dataFormatada;
     }
 
     return (
@@ -484,16 +497,20 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
                                                     <Flex flex="1" flexDir={{ base: "column", md: "row" }} align={{ base: "start", md: "center" }} gap={8}>
                                                         <VStack align="start" gap={0}>
                                                             <Text fontSize="xs" fontWeight="black" color="blue.800" textTransform="uppercase">ID DA TROCA</Text>
-                                                            <Heading size="md" fontWeight="black">{troca.id}</Heading>
+                                                            <Heading size="sm" fontWeight="black">{troca.id}</Heading>
+                                                        </VStack>
+                                                        <VStack align="start" gap={0}>
+                                                            <Text fontSize="xs" fontWeight="black" color="blue.800" textTransform="uppercase">Criada em:</Text>
+                                                            <Heading size="sm" fontWeight="black">  {formatarCriacao(troca.dataCriacao) || "Não criada"} </Heading>
                                                         </VStack>
                                                         <VStack align="start" gap={0}>
                                                             <Text fontSize="xs" fontWeight="black" color="blue.800" textTransform="uppercase">Finalizada</Text>
-                                                            <Heading size="md" fontWeight="black">  {formatarDataHora(troca.finalizadaEm) || "Não finalizada"} </Heading>
+                                                            <Heading size="sm" fontWeight="black">  {formatarFinal(troca.finalizadaEm) || "Não finalizada"} </Heading>
                                                         </VStack>
                                                         {troca.nomeInspetor && (
                                                             <VStack align="start" gap={0}>
                                                                 <Text fontSize="xs" fontWeight="black" color="blue.800" textTransform="uppercase">Analista</Text>
-                                                                <Heading size="md" fontWeight="black">  {troca.nomeInspetor} </Heading>
+                                                                <Heading size="sm" fontWeight="black">  {troca.nomeInspetor} </Heading>
                                                             </VStack>
                                                         )}
 

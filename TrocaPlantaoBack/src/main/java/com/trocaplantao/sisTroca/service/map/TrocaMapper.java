@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -65,6 +66,7 @@ public class TrocaMapper {
                 .aceitaSN(troca.getAceitaSN())
                 .nomeInspetor(troca.getNomeInspetor() == null ? "" : troca.getNomeInspetor())
                 .motivoTroca(troca.getMotivoTroca()  == null ? "" : troca.getMotivoTroca())
+                .dataCriacao(troca.getDataCriacao() == null ? "": troca.getDataCriacao().toString())
                 .build();
     }
 
@@ -78,6 +80,7 @@ public class TrocaMapper {
                 .funcaoPlantao(dto.getTroca().funcaoPlantao())
                 .trocaEmAnalise(true)
                 .aceitaSN(AceitaSN.EM_ANALISE)
+                .dataCriacao(LocalDateTime.now())
                 .build();
 
         var dtoTroca = dto.getTroca();

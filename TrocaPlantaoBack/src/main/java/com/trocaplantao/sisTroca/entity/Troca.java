@@ -31,6 +31,7 @@ public class Troca {
     private LocalDateTime finalizadaEm;
     private String nomeInspetor;
     private String motivoTroca;
+    private LocalDateTime dataCriacao;
 
     @PrePersist
     public void gerarIdSeNaoExistir() {

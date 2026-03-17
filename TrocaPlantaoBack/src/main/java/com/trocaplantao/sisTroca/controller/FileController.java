@@ -31,8 +31,6 @@ public class FileController {
             Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
             Resource resource = new UrlResource(filePath.toUri());
 
-            System.out.println("Tentando servir: " + filePath.toString());
-
             if (resource.exists() && resource.isReadable()) {
                 long size = Files.size(filePath); // pode lançar IOException
                 String contentType = Files.probeContentType(filePath);
@@ -43,7 +41,6 @@ public class FileController {
                         .contentType(MediaType.parseMediaType(contentType))
                         .body(resource);
             } else {
-                System.out.println("Arquivo não encontrado no caminho: " + filePath.toString());
                 return ResponseEntity.notFound().build();
             }
         } catch (MalformedURLException e) {

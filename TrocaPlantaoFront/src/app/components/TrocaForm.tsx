@@ -260,7 +260,8 @@ export default function TrocaForm() {
         return digits.replace(/(\d{2})(\d{5})(\d+)/, '($1) $2-$3');
     }
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date(new Date().setDate(new Date().getDate() - 15)).toISOString().split("T")[0]
+
 
     return (
         <>
@@ -576,7 +577,8 @@ export default function TrocaForm() {
                                                 </Field.Label>
                                                 <Input
                                                     type="date"
-                                                    min={today}
+                                                    min={new Date(new Date().setDate(new Date().getDate() - 15)).toISOString().split("T")[0]}
+                                                    max={new Date(new Date().setDate(new Date().getDate() + 30)).toISOString().split("T")[0]}
                                                     {...register('pri_dataTroca', { required: "Data é obrigatória" })}
                                                     h={{ base: "50px", md: "60px" }}
                                                     fontSize="lg"
@@ -888,7 +890,8 @@ export default function TrocaForm() {
                                                 </Field.Label>
                                                 <Input
                                                     type="date"
-                                                    min={today}
+                                                    min={new Date(new Date().setDate(new Date().getDate() - 15)).toISOString().split("T")[0]}
+                                                    max={new Date(new Date().setDate(new Date().getDate() + 30)).toISOString().split("T")[0]}
                                                     {...register('sec_dataTroca', { required: "Data é obrigatória" })}
                                                     h={{ base: "50px", md: "60px" }}
                                                     fontSize="lg"
@@ -1023,7 +1026,7 @@ export default function TrocaForm() {
                                     </VStack>
 
                                     {/* Botão de Envio */}
-                                    <Box pt={10}>
+                                    <Box>
                                         <Button
                                             type="submit"
                                             size="xl"
@@ -1052,7 +1055,9 @@ export default function TrocaForm() {
 
 
                                 </VStack>
-
+                                <Text textAlign={'center'} color={'gray.500'} fontSize={'sm'} pt={10}>
+                                    Ao clicar em "Enviar Solicitação", o id da troca será gerado e enviado para o e-mail do requerente primário e secundário, onde ambos poderão acompanhar o status da solicitação.
+                                </Text>
                             </form>
 
                         </Card.Body>

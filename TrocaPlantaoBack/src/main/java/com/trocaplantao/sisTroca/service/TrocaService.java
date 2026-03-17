@@ -38,7 +38,7 @@ public class TrocaService {
     public TrocaResponse createTroca(TrocaCompletaRequest trocaRequest, List<MultipartFile> pri_files, List<MultipartFile> sec_files) throws IOException {
         List<String> allowedTypes = List.of("image/png", "image/jpeg");
 
-        if (pri_files.size() > 2 ||  sec_files.size() > 2) {
+        if (pri_files.size() > 2 || sec_files.size() > 2) {
             throw new IllegalArgumentException("Máximo de 2 arquivos permitidos");
         }
 
@@ -65,7 +65,7 @@ public class TrocaService {
         for (MultipartFile file : sec_files) {
             String nome = file.getOriginalFilename();
             assert nome != null;
-            boolean validaExtencao = !nome.contains(".png") &&  !nome.contains(".jpg") && !nome.contains(".jpeg");
+            boolean validaExtencao = !nome.contains(".png") && !nome.contains(".jpg") && !nome.contains(".jpeg");
             if (!allowedTypes.contains(file.getContentType()) || validaExtencao) {
                 throw new IllegalArgumentException("Somente imagens JPG ou PNG são permitidas");
             }
@@ -102,9 +102,9 @@ public class TrocaService {
         var troca = trocaRepository.findById(id)
                 .orElseThrow();
 
-       if (nomeInspector.trim().length() < 3){
-           throw new IllegalArgumentException("Nome do inspetor deve ter 3 caracteres");
-       }
+        if (nomeInspector.trim().length() < 3) {
+            throw new IllegalArgumentException("Nome do inspetor deve ter 3 caracteres");
+        }
 
         troca.setTrocaEmAnalise(false);
         troca.setFinalizadaEm(LocalDateTime.now());

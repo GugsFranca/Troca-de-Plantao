@@ -15,7 +15,8 @@ public record TrocaResponse(
         AceitaSN aceitaSN,
         LocalDateTime finalizadaEm,
         String nomeInspetor,
-        String motivoTroca
+        String motivoTroca,
+        String dataCriacao
 
 ) {
 }

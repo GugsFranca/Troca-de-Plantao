@@ -10,8 +10,6 @@ export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ slug: string[] }> }
 ) {
-    console.log(`[IMAGE_PROXY] Requisição recebida para: ${request.url}`);
-    console.log(`[IMAGE_PROXY] BACKEND_URL: ${BACKEND_URL}`);
 
     // Aguarda a resolução dos parâmetros
     const { slug } = await params;
@@ -28,13 +26,10 @@ export async function GET(
     const baseUrl = BACKEND_URL?.replace(/\/api$/, '');
     const imageUrl = `${baseUrl}/uploads/${imagePath}`;
 
-    console.log(`[IMAGE_PROXY] Buscando imagem em: ${imageUrl}`);
-
     try {
         const backendRes = await fetch(imageUrl);
 
         if (!backendRes.ok) {
-            console.error(`[IMAGE_PROXY] Erro do backend: ${backendRes.status} ${backendRes.statusText}`);
             return new NextResponse(backendRes.body, {
                 status: backendRes.status,
                 statusText: backendRes.statusText,

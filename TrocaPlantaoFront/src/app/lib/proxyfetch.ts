@@ -4,9 +4,6 @@ const BackEndURL = process.env.BACKEND_INTERNAL_URL;
 
 export async function proxyFetch(path: string, init?: RequestInit) {
 
-    console.log(`[PROXY_FETCH] Requisição para: ${path} com init:`, init);
-    console.log(`[PROXY_FETCH] BACKEND_INTERNAL_URL: ${BackEndURL}`);
-
     try {
         const modifiedInit = { ...init };
 
