@@ -124,7 +124,6 @@ public class TrocaService {
 
         for (Troca troca : trocas) {
             deletarArquivosDaTroca(troca);
-            trocaRepository.delete(troca);
         }
         log.info("Limpeza automática concluída: {} trocas removidas.", trocas.size());
     }

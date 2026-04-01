@@ -62,6 +62,7 @@ type Troca = {
     finalizadaEm?: string | null;
     dataCriacao?: string | null;
     nomeInspetor?: string;
+    motivoTroca?: string;
 };
 
 export default function Inspector({ nomeBase }: { nomeBase: string }) {
@@ -295,14 +296,8 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
         .map(t => t.funcaoPlantao)
     )).sort();
 
-    function formatarFinal(dataString?: string | null) {
-        if (!dataString) return "—";
 
-        const data = new Date(dataString);
-
-        return data.toLocaleDateString("pt-BR");
-    }
-    function formatarCriacao(dataString?: string | null) {
+    function formatarData(dataString?: string | null) {
         if (!dataString) return "—";
 
         const formatador = new Intl.DateTimeFormat('pt-BR', {
@@ -501,11 +496,11 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
                                                         </VStack>
                                                         <VStack align="start" gap={0}>
                                                             <Text fontSize="xs" fontWeight="black" color="blue.800" textTransform="uppercase">Criada em:</Text>
-                                                            <Heading size="sm" fontWeight="black">  {formatarCriacao(troca.dataCriacao) || "Não criada"} </Heading>
+                                                            <Heading size="sm" fontWeight="black">  {formatarData(troca.dataCriacao) || "Não criada"} </Heading>
                                                         </VStack>
                                                         <VStack align="start" gap={0}>
                                                             <Text fontSize="xs" fontWeight="black" color="blue.800" textTransform="uppercase">Finalizada</Text>
-                                                            <Heading size="sm" fontWeight="black">  {formatarFinal(troca.finalizadaEm) || "Não finalizada"} </Heading>
+                                                            <Heading size="sm" fontWeight="black">  {formatarData(troca.finalizadaEm) || "Não finalizada"} </Heading>
                                                         </VStack>
                                                         {troca.nomeInspetor && (
                                                             <VStack align="start" gap={0}>
@@ -538,6 +533,7 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
                                                                 <ArrowRightLeft size={20} color="blue.800" /> Detalhes da Substituição | {troca.id}
                                                             </Heading>
 
+
                                                             <HStack gap={3}>
 
                                                                 <>
@@ -553,6 +549,11 @@ export default function Inspector({ nomeBase }: { nomeBase: string }) {
                                                                 </Button>
                                                             </HStack>
                                                         </Flex>
+                                                        {troca.motivoTroca && (
+                                                            <Heading size="md" color="gray.800" fontWeight="bold" display="flex" alignItems="center" gap={2}>
+                                                                <ArrowRightLeft size={20} color="blue.800" /> Motivo da Recusa: {troca.motivoTroca}
+                                                            </Heading>
+                                                        )}
 
                                                         {/* Exibição dos Requerentes (Titular e Substituto) */}
                                                         <SimpleGrid columns={{ base: 1, lg: 2 }} gap={6}>
